@@ -2,8 +2,6 @@ package com.max.natifeapptwo.data.room.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.max.natifeapptwo.data.retrofit.responseModels.*
-import com.max.natifeapptwo.domain.models.UserDetails
 
 @Entity(tableName = UserEntity.TABLE_NAME)
 data class UserEntity(
