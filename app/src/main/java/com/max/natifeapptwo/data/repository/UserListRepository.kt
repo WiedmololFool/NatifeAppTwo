@@ -2,6 +2,7 @@ package com.max.natifeapptwo.data.repository
 
 import com.max.natifeapptwo.data.retrofit.responseModels.UserListResponse
 import com.max.natifeapptwo.data.room.entities.UserEntity
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 
@@ -15,9 +16,6 @@ class UserListRepository(
         resultsNumber: String,
         nationality: String
     ): Observable<UserListResponse> {
-
-        userListLocalDataSource.deleteAllUsers()
-
         return userListRemoteDataSource
             .getUserList(resultsNumber, nationality)
             .toObservable()
@@ -30,6 +28,10 @@ class UserListRepository(
 
     fun getCachedUserList(): Single<List<UserEntity>> {
         return userListLocalDataSource.loadAllUsers()
+    }
+
+    fun clearCachedUserList(): Completable{
+        return userListLocalDataSource.deleteAllUsers()
     }
 
 

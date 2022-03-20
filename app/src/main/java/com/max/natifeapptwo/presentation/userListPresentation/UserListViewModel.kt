@@ -35,6 +35,11 @@ class UserListViewModel : ViewModel() {
                     _users.value = userListResponse.users.map {
                         it.toUserEntity()
                     }
+                    userListRepository.clearCachedUserList().subscribe({
+                        Log.e("TAG", "Success clearCachedUserList()")
+                    },{
+
+                    })
                 }, { throwable ->
                     compositeDisposable.add(
                         userListRepository.getCachedUserList().subscribeOn(Schedulers.io())
