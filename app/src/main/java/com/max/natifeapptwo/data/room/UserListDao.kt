@@ -19,7 +19,10 @@ interface UserListDao {
     fun deleteAllUsers(): Completable
 
     @Query("SELECT * FROM ${UserEntity.TABLE_NAME} WHERE :userId like userId")
-    fun loadUser(userId: Int): Single<UserEntity> //в локал дата брать first от листа
+    fun loadUser(userId: Int): Single<UserEntity>
+
+    @Query("SELECT * FROM ${UserEntity.TABLE_NAME} WHERE :uuid like uuid")
+    fun findUserByUuid(uuid: String): Single<UserEntity>
 
     @Insert(entity = UserEntity::class, onConflict = OnConflictStrategy.REPLACE)
     fun addUser(userEntity: UserEntity): Completable

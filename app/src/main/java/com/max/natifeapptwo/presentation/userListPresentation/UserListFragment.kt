@@ -5,17 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.max.natifeapptwo.R
 import com.max.natifeapptwo.UserApp
 import com.max.natifeapptwo.data.repository.UserListRepository
 import com.max.natifeapptwo.data.retrofit.RetrofitUserListDataSource
 import com.max.natifeapptwo.data.room.DatabaseObject
 import com.max.natifeapptwo.data.room.RoomUserListDataSource
-import com.max.natifeapptwo.data.room.UserListDao
-import com.max.natifeapptwo.data.room.entities.UserDatabase
 import com.max.natifeapptwo.databinding.FragmentUserListBinding
+import com.max.natifeapptwo.presentation.userDetailsPresentation.UserDetailsFragment
 
 
 class UserListFragment : Fragment() {
@@ -27,7 +26,11 @@ class UserListFragment : Fragment() {
     }
     private val adapter by lazy {
         UserListAdapter { user ->
-            Toast.makeText(context, user.toString(), Toast.LENGTH_SHORT).show()
+            val userDetailsFragment = UserDetailsFragment.newInstance(user.uuid)
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, userDetailsFragment)
+                .addToBackStack(null)
+                .commit()
         }
     }
 
@@ -49,7 +52,7 @@ class UserListFragment : Fragment() {
         viewModel.users.observe(viewLifecycleOwner) { users ->
             adapter.submitList(users)
         }
-        
+
         val userListRepository = UserListRepository(
             userListLocalDataSource = RoomUserListDataSource(
                 DatabaseObject.apply {

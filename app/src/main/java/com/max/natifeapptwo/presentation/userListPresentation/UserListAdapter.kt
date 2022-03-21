@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.max.natifeapptwo.data.retrofit.responseModels.User
 import com.max.natifeapptwo.data.room.entities.UserEntity
 import com.max.natifeapptwo.databinding.ListUserItemBinding
 

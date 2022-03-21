@@ -2,7 +2,6 @@ package com.max.natifeapptwo.data.repository
 
 import com.max.natifeapptwo.data.retrofit.responseModels.UserListResponse
 import com.max.natifeapptwo.data.room.entities.UserEntity
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 
@@ -21,7 +20,8 @@ class UserListRepository(
             .toObservable()
             .flatMap { userListResponse ->
                 userListLocalDataSource
-                    .saveRemoteResponse(userListResponse)
+                    .deleteAllUsers()
+                    .andThen(userListLocalDataSource.saveRemoteResponse(userListResponse))
                     .andThen(Observable.just(userListResponse))
             }
     }
@@ -30,9 +30,7 @@ class UserListRepository(
         return userListLocalDataSource.loadAllUsers()
     }
 
-    fun clearCachedUserList(): Completable{
-        return userListLocalDataSource.deleteAllUsers()
+    fun findUserByUuid(uuid: String): Single<UserEntity>{
+        return userListLocalDataSource.findUserByUuid(uuid = uuid)
     }
-
-
 }

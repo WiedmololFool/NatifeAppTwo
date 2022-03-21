@@ -18,9 +18,15 @@ class RoomUserListDataSource(
         return userListDao.loadUser(userId = userId)
     }
 
+    override fun findUserByUuid(uuid: String): Single<UserEntity> {
+        return userListDao.findUserByUuid(uuid = uuid)
+    }
+
     override fun deleteAllUsers(): Completable {
         return userListDao.deleteAllUsers()
     }
+
+
 
     override fun saveRemoteResponse(response: UserListResponse): Completable {
         return userListDao.saveAllUsers(response.users.map { user ->

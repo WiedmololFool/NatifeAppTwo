@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.max.natifeapptwo.Constants
 import com.max.natifeapptwo.data.repository.UserListRepository
 import com.max.natifeapptwo.data.room.entities.UserEntity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -31,26 +32,23 @@ class UserListViewModel : ViewModel() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ userListResponse ->
-                    Log.e("TAG", userListResponse.users[0].name.toString())
+                    Log.e(Constants.TAG, userListResponse.users[0].name.toString())
                     _users.value = userListResponse.users.map {
                         it.toUserEntity()
                     }
-                    userListRepository.clearCachedUserList().subscribe({
-                        Log.e("TAG", "Success clearCachedUserList()")
-                    },{
 
-                    })
                 }, { throwable ->
+
                     compositeDisposable.add(
                         userListRepository.getCachedUserList().subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({ userEntities ->
                                 _users.value = userEntities
                             }, {
-                                Log.e("TAG", throwable.message.toString())
+                                Log.e(Constants.TAG, throwable.message.toString())
                             })
                     )
-                    Log.e("TAG", throwable.message.toString())
+                    Log.e(Constants.TAG, throwable.message.toString())
                 })
         )
     }

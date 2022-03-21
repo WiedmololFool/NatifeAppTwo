@@ -12,6 +12,8 @@ interface UserListLocalDataSource {
 
     fun loadUser(userId: Int): Single<UserEntity>
 
+    fun findUserByUuid(uuid: String): Single<UserEntity>
+
     fun deleteAllUsers(): Completable
 
     fun saveRemoteResponse(response: UserListResponse): Completable
