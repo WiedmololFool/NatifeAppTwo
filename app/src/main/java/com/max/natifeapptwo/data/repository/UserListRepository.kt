@@ -14,7 +14,7 @@ class UserListRepository(
     fun fetchUserList(
         resultsNumber: String,
         nationality: String
-    ): Observable<UserListResponse> {
+    ): Observable<List<UserEntity>> {
         return userListRemoteDataSource
             .getUserList(resultsNumber, nationality)
             .toObservable()
@@ -22,15 +22,15 @@ class UserListRepository(
                 userListLocalDataSource
                     .deleteAllUsers()
                     .andThen(userListLocalDataSource.saveRemoteResponse(userListResponse))
-                    .andThen(Observable.just(userListResponse))
+                    .andThen(Observable.just(userListResponse.users.map {
+                        it.toUserEntity()
+                    }))
+     
             }
+            .onErrorResumeNext(userListLocalDataSource.loadAllUsers().toObservable())
     }
 
-    fun getCachedUserList(): Single<List<UserEntity>> {
-        return userListLocalDataSource.loadAllUsers()
-    }
-
-    fun findUserByUuid(uuid: String): Single<UserEntity>{
+    fun findUserByUuid(uuid: String): Single<UserEntity> {
         return userListLocalDataSource.findUserByUuid(uuid = uuid)
     }
 }

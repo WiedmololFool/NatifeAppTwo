@@ -8,4 +8,8 @@
     <string name="date_label">Date:</string>
     <string name="password_label">Password:</string>
     <string name="address_label">Address:</string>
+    <string name="tv_name_text">%s %s %s</string>
+    <string name="tv_short_name">%s %s</string>
+    <string name="tv_location_text">%s, %s, %d</string>
+    <string name="tv_address_text">%s, %s, %d</string>
 </resources>

@@ -11,7 +11,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class UserDetailsViewModel(private var uuid: String) : ViewModel() {
+class UserDetailsViewModel(
+    private var uuid: String,
+    private val userListRepository: UserListRepository
+) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -23,7 +26,7 @@ class UserDetailsViewModel(private var uuid: String) : ViewModel() {
         compositeDisposable.dispose()
     }
 
-    fun getUser(userListRepository: UserListRepository) {
+    fun getUser() {
         compositeDisposable.add(
             userListRepository.findUserByUuid(uuid = uuid)
                 .subscribeOn(Schedulers.io())

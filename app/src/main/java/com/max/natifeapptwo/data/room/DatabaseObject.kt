@@ -2,7 +2,6 @@ package com.max.natifeapptwo.data.room
 
 import android.content.Context
 import androidx.room.Room
-import com.max.natifeapptwo.data.room.entities.UserDatabase
 
 object DatabaseObject {
 

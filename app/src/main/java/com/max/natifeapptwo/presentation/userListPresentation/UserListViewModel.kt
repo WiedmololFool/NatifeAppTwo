@@ -11,7 +11,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class UserListViewModel : ViewModel() {
+class UserListViewModel(
+    userListRepository: UserListRepository
+) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -23,31 +25,22 @@ class UserListViewModel : ViewModel() {
         compositeDisposable.dispose()
     }
 
-    fun fetchUserList(userListRepository: UserListRepository) {
+    init {
+        fetchUserList(userListRepository = userListRepository)
+    }
+
+    private fun fetchUserList(userListRepository: UserListRepository) {
         compositeDisposable.add(
             userListRepository.fetchUserList(
-                "20",
-                "au,br,ch,de,dk,es,fi,fr,ie,no,nl,nz,tr,us"
+                Constants.USERS_RESPONSE_NUMBER,
+                Constants.USERS_RESPONSE_NATIONALITY
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ userListResponse ->
-                    Log.e(Constants.TAG, userListResponse.users[0].name.toString())
-                    _users.value = userListResponse.users.map {
-                        it.toUserEntity()
-                    }
-
+                    Log.e(Constants.TAG, userListResponse.toString())
+                    _users.value = userListResponse
                 }, { throwable ->
-
-                    compositeDisposable.add(
-                        userListRepository.getCachedUserList().subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe({ userEntities ->
-                                _users.value = userEntities
-                            }, {
-                                Log.e(Constants.TAG, throwable.message.toString())
-                            })
-                    )
                     Log.e(Constants.TAG, throwable.message.toString())
                 })
         )

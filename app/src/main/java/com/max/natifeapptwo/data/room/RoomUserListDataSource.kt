@@ -8,7 +8,7 @@ import io.reactivex.Single
 
 class RoomUserListDataSource(
     private val userListDao: UserListDao
-) : UserListLocalDataSource {  //add userListDao
+) : UserListLocalDataSource {
 
     override fun loadAllUsers(): Single<List<UserEntity>> {
         return userListDao.loadAllUsers()
@@ -25,8 +25,6 @@ class RoomUserListDataSource(
     override fun deleteAllUsers(): Completable {
         return userListDao.deleteAllUsers()
     }
-
-
 
     override fun saveRemoteResponse(response: UserListResponse): Completable {
         return userListDao.saveAllUsers(response.users.map { user ->

@@ -25,19 +25,27 @@ class UserDetailsFragment : Fragment() {
         ViewModelProvider(
             viewModelStore,
             UserDetailsViewModelFactory(
-                arguments?.getString(Constants.UUID_KEY) ?: "404"
+                arguments?.getString(Constants.UUID_KEY) ?: Constants.UUID_DEFAULT_VALUE,
+                UserListRepository(
+                    userListLocalDataSource = RoomUserListDataSource(
+                        DatabaseObject.apply {
+                            init(context = requireActivity().applicationContext)
+                        }.database.userListDao()
+                    ),
+                    userListRemoteDataSource = RetrofitUserListDataSource(
+                        (activity?.application as UserApp).userApi
+                    )
+                )
             )
         ).get(UserDetailsViewModel::class.java)
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentUserDetailsBinding.inflate(inflater, container, false)
         this.binding = binding
-        Log.e(Constants.TAG, arguments?.getString(Constants.UUID_KEY) ?: "404")
         return binding.root
     }
 
@@ -48,20 +56,8 @@ class UserDetailsFragment : Fragment() {
                 { user -> showUser(user) },
                 {}
             )
-
         }
-        viewModel.getUser(
-            UserListRepository(
-                userListLocalDataSource = RoomUserListDataSource(
-                    DatabaseObject.apply {
-                        init(context = requireActivity().applicationContext)
-                    }.database.userListDao()
-                ),
-                userListRemoteDataSource = RetrofitUserListDataSource(
-                    (activity?.application as UserApp).userApi
-                )
-            )
-        )
+        viewModel.getUser()
     }
 
     override fun onDestroyView() {
@@ -71,25 +67,33 @@ class UserDetailsFragment : Fragment() {
 
     private fun showUser(userEntity: UserEntity) {
         binding?.apply {
-            tvName.text = "${userEntity.title} ${userEntity.first} ${userEntity.last}"
-            tvUserName.text = userEntity.username
-            tvLocation.text = "${userEntity.city}, ${userEntity.country}, ${userEntity.postcode}"
-            tvAge.text = userEntity.age.toString()
-            tvGender.text = userEntity.gender
-            tvNationality.text = userEntity.nat
-            tvEmail.text = userEntity.email
-            tvDate.text = userEntity.date.substringBefore("T")
-            tvPassword.text = userEntity.password
-            tvAddress.text = "${userEntity.state}, ${userEntity.streetName}" +
-                    " ${userEntity.streetNumber}"
-            Glide.with(this@UserDetailsFragment)
-                .load(userEntity.picture)
-                .fitCenter()
-                .placeholder(R.drawable.ic_account_circle)
-                .into(img)
-
+            with(userEntity) {
+                tvName.text = resources.getString(
+                    R.string.tv_name_text, title, first, last
+                )
+                tvUserName.text = username
+                tvLocation.text = resources.getString(
+                    R.string.tv_location_text, city, country, postcode
+                )
+                tvAge.text = age.toString()
+                tvGender.text = gender
+                tvNationality.text = nat
+                tvEmail.text = email
+                tvDate.text = date.toFormattedDate()
+                tvPassword.text = password
+                tvAddress.text = resources.getString(
+                    R.string.tv_address_text, state, streetName, streetNumber
+                )
+                Glide.with(this@UserDetailsFragment)
+                    .load(picture)
+                    .fitCenter()
+                    .placeholder(R.drawable.ic_account_circle)
+                    .into(img)
+            }
         }
     }
+
+    private fun String.toFormattedDate(): String = this.substringBefore("T")
 
     companion object {
 

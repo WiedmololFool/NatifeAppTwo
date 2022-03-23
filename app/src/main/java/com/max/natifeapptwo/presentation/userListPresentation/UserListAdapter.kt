@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.max.natifeapptwo.R
 import com.max.natifeapptwo.data.room.entities.UserEntity
 import com.max.natifeapptwo.databinding.ListUserItemBinding
 
@@ -17,7 +18,11 @@ class UserListAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bindItem(userItem: UserEntity) = with(binding) {
-            tvName.text = "${userItem.first} ${userItem.last}"
+            tvName.text = itemView.context.resources.getString(
+                R.string.tv_short_name,
+                userItem.first,
+                userItem.last
+            )
             root.setOnClickListener {
                 onItemClickListener(userItem)
             }

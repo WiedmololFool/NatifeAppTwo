@@ -21,7 +21,21 @@ class UserListFragment : Fragment() {
 
     private var binding: FragmentUserListBinding? = null
     private val viewModel by lazy {
-        ViewModelProvider(this)
+        ViewModelProvider(
+            this,
+            UserListViewModelFactory(
+                UserListRepository(
+                    userListLocalDataSource = RoomUserListDataSource(
+                        DatabaseObject.apply {
+                            init(context = requireActivity().applicationContext)
+                        }.database.userListDao()
+                    ),
+                    userListRemoteDataSource = RetrofitUserListDataSource(
+                        (activity?.application as UserApp).userApi
+                    )
+                )
+            )
+        )
             .get(UserListViewModel::class.java)
     }
     private val adapter by lazy {
@@ -52,18 +66,6 @@ class UserListFragment : Fragment() {
         viewModel.users.observe(viewLifecycleOwner) { users ->
             adapter.submitList(users)
         }
-
-        val userListRepository = UserListRepository(
-            userListLocalDataSource = RoomUserListDataSource(
-                DatabaseObject.apply {
-                    init(context = requireActivity().applicationContext)
-                }.database.userListDao()
-            ),
-            userListRemoteDataSource = RetrofitUserListDataSource(
-                (activity?.application as UserApp).userApi
-            )
-        )
-        viewModel.fetchUserList(userListRepository = userListRepository)
     }
 
     override fun onDestroyView() {

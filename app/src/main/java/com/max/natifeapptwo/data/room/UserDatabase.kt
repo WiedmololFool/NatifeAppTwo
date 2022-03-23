@@ -1,8 +1,8 @@
-package com.max.natifeapptwo.data.room.entities
+package com.max.natifeapptwo.data.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.max.natifeapptwo.data.room.UserListDao
+import com.max.natifeapptwo.data.room.entities.UserEntity
 
 
 @Database(
