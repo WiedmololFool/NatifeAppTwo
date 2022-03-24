@@ -1,6 +1,5 @@
 package com.max.natifeapptwo.data.repository
 
-import com.max.natifeapptwo.data.retrofit.responseModels.UserListResponse
 import com.max.natifeapptwo.data.room.entities.UserEntity
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -21,11 +20,13 @@ class UserListRepository(
             .flatMap { userListResponse ->
                 userListLocalDataSource
                     .deleteAllUsers()
-                    .andThen(userListLocalDataSource.saveRemoteResponse(userListResponse))
+                    .andThen(userListLocalDataSource.saveUsers(
+                        userListResponse.users.map {
+                        it.toUserEntity()
+                    }))
                     .andThen(Observable.just(userListResponse.users.map {
                         it.toUserEntity()
                     }))
-     
             }
             .onErrorResumeNext(userListLocalDataSource.loadAllUsers().toObservable())
     }

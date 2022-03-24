@@ -3,31 +3,23 @@ package com.max.natifeapptwo.presentation.userDetailsPresentation
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.max.natifeapptwo.Constants
 import com.max.natifeapptwo.data.repository.UserListRepository
 import com.max.natifeapptwo.data.room.entities.UserEntity
+import com.max.natifeapptwo.presentation.BaseViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class UserDetailsViewModel(
     private var uuid: String,
     private val userListRepository: UserListRepository
-) : ViewModel() {
-
-    private val compositeDisposable = CompositeDisposable()
+) : BaseViewModel() {
 
     private val _user = MutableLiveData<Result<UserEntity>>()
     val user: LiveData<Result<UserEntity>> = _user
 
-    override fun onCleared() {
-        super.onCleared()
-        compositeDisposable.dispose()
-    }
-
     fun getUser() {
-        compositeDisposable.add(
+        addDisposable(
             userListRepository.findUserByUuid(uuid = uuid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

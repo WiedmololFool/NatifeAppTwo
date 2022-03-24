@@ -16,5 +16,5 @@ interface UserListLocalDataSource {
 
     fun deleteAllUsers(): Completable
 
-    fun saveRemoteResponse(response: UserListResponse): Completable
+    fun saveUsers(userList: List<UserEntity>): Completable
 }

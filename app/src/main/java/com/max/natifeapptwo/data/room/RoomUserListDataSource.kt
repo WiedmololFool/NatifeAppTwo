@@ -2,7 +2,6 @@ package com.max.natifeapptwo.data.room
 
 import com.max.natifeapptwo.data.room.entities.UserEntity
 import com.max.natifeapptwo.data.repository.UserListLocalDataSource
-import com.max.natifeapptwo.data.retrofit.responseModels.UserListResponse
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -26,9 +25,7 @@ class RoomUserListDataSource(
         return userListDao.deleteAllUsers()
     }
 
-    override fun saveRemoteResponse(response: UserListResponse): Completable {
-        return userListDao.saveAllUsers(response.users.map { user ->
-            user.toUserEntity()
-        })
+    override fun saveUsers(userList: List<UserEntity>): Completable {
+        return userListDao.saveAllUsers(userList)
     }
 }
