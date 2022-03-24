@@ -11,17 +11,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class UserListViewModel(
-    userListRepository: UserListRepository
+    private val userListRepository: UserListRepository
 ) : BaseViewModel() {
 
     private val _users = MutableLiveData<List<UserEntity>>()
     val users: LiveData<List<UserEntity>> = _users
 
     init {
-        fetchUserList(userListRepository = userListRepository)
+        fetchUserList()
     }
 
-    private fun fetchUserList(userListRepository: UserListRepository) {
+    private fun fetchUserList() {
         addDisposable(
             userListRepository.fetchUserList(
                 Constants.USERS_RESPONSE_NUMBER,

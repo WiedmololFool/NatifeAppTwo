@@ -1,6 +1,5 @@
 package com.max.natifeapptwo.data.repository
 
-import com.max.natifeapptwo.data.retrofit.responseModels.UserListResponse
 import com.max.natifeapptwo.data.room.entities.UserEntity
 import io.reactivex.Completable
 import io.reactivex.Single

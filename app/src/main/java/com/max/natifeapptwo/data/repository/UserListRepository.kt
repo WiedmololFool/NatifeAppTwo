@@ -17,16 +17,16 @@ class UserListRepository(
         return userListRemoteDataSource
             .getUserList(resultsNumber, nationality)
             .toObservable()
-            .flatMap { userListResponse ->
+            .map { userListResponse ->
+                userListResponse.users.map { user ->
+                    user.toUserEntity()
+                }
+            }
+            .flatMap { userList ->
                 userListLocalDataSource
                     .deleteAllUsers()
-                    .andThen(userListLocalDataSource.saveUsers(
-                        userListResponse.users.map {
-                        it.toUserEntity()
-                    }))
-                    .andThen(Observable.just(userListResponse.users.map {
-                        it.toUserEntity()
-                    }))
+                    .andThen(userListLocalDataSource.saveUsers(userList))
+                    .andThen(Observable.just(userList))
             }
             .onErrorResumeNext(userListLocalDataSource.loadAllUsers().toObservable())
     }

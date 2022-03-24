@@ -15,8 +15,8 @@ class UserDetailsViewModel(
     private val userListRepository: UserListRepository
 ) : BaseViewModel() {
 
-    private val _user = MutableLiveData<Result<UserEntity>>()
-    val user: LiveData<Result<UserEntity>> = _user
+    private val _user = MutableLiveData<UserEntity>()
+    val user: LiveData<UserEntity> = _user
 
     fun getUser() {
         addDisposable(
@@ -24,9 +24,8 @@ class UserDetailsViewModel(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ userEntity ->
-                    _user.value = runCatching {
-                        userEntity
-                    }
+                    _user.value = userEntity
+
                 }, {
                     Log.e(Constants.TAG, it.message.toString())
                 })
