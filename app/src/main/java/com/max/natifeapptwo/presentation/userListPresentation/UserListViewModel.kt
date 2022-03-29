@@ -21,7 +21,7 @@ class UserListViewModel(
         fetchUserList()
     }
 
-    private fun fetchUserList() {
+  fun fetchUserList() {
         addDisposable(
             userListRepository.fetchUserList(
                 Constants.USERS_RESPONSE_NUMBER,
@@ -31,7 +31,8 @@ class UserListViewModel(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ userListResponse ->
                     Log.e(Constants.TAG, userListResponse.toString())
-                    _users.value = userListResponse
+                    val currentUsers = _users.value ?: listOf()
+                    _users.value = currentUsers + userListResponse
                 }, { throwable ->
                     Log.e(Constants.TAG, throwable.message.toString())
                 })

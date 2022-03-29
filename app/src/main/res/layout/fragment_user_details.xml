@@ -61,7 +61,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvUserName"
-        tools:text="Los Angeles, CA" />
+        tools:text="Los Angeles, CA"
+        android:gravity="center_vertical"/>
 
 
     <TextView

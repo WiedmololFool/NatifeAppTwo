@@ -9,8 +9,15 @@ class RoomUserListDataSource(
     private val userListDao: UserListDao
 ) : UserListLocalDataSource {
 
+    private var firstRequest = true
+
     override fun loadAllUsers(): Single<List<UserEntity>> {
-        return userListDao.loadAllUsers()
+        return if (firstRequest) {
+            firstRequest = false
+            userListDao.loadAllUsers()
+        } else {
+            Single.just(listOf())
+        }
     }
 
     override fun loadUser(userId: Int): Single<UserEntity> {

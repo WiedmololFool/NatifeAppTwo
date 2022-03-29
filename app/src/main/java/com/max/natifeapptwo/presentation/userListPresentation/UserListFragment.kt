@@ -39,13 +39,15 @@ class UserListFragment : Fragment() {
             .get(UserListViewModel::class.java)
     }
     private val adapter by lazy {
-        UserListAdapter { user ->
+        UserListAdapter(onItemClickListener = { user ->
             val userDetailsFragment = UserDetailsFragment.newInstance(user.uuid)
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, userDetailsFragment)
                 .addToBackStack(null)
                 .commit()
-        }
+        },  onPageEndReached = {
+            viewModel.fetchUserList()
+        })
     }
 
     override fun onCreateView(

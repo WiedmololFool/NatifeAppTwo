@@ -7,8 +7,9 @@ import io.reactivex.Single
 
 class UserListRepository(
     private val userListLocalDataSource: UserListLocalDataSource,
-    private val userListRemoteDataSource: UserListRemoteDataSource
+    private val userListRemoteDataSource: UserListRemoteDataSource,
 ) {
+    private var firstRequest = true
 
     fun fetchUserList(
         resultsNumber: String,
@@ -23,10 +24,16 @@ class UserListRepository(
                 }
             }
             .flatMap { userList ->
-                userListLocalDataSource
-                    .deleteAllUsers()
-                    .andThen(userListLocalDataSource.saveUsers(userList))
-                    .andThen(Observable.just(userList))
+                if (firstRequest) {
+                    firstRequest = false
+                    userListLocalDataSource
+                        .deleteAllUsers()
+                        .andThen(userListLocalDataSource.saveUsers(userList))
+                        .andThen(Observable.just(userList))
+                } else {
+                    userListLocalDataSource.saveUsers(userList)
+                        .andThen(Observable.just(userList))
+                }
             }
             .onErrorResumeNext(userListLocalDataSource.loadAllUsers().toObservable())
     }

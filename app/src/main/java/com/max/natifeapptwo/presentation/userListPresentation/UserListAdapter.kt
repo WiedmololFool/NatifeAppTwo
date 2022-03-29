@@ -9,8 +9,11 @@ import com.max.natifeapptwo.R
 import com.max.natifeapptwo.data.room.entities.UserEntity
 import com.max.natifeapptwo.databinding.ListUserItemBinding
 
+private const val USERS_PREFETCH_COUNT = 5
+
 class UserListAdapter(
-    private val onItemClickListener: (UserEntity) -> Unit
+    private val onItemClickListener: (UserEntity) -> Unit,
+    private val onPageEndReached: () -> Unit
 ) : ListAdapter<UserEntity, UserListAdapter.UserViewHolder>(UserComparator()) {
 
     inner class UserViewHolder(
@@ -47,7 +50,15 @@ class UserListAdapter(
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        holder.bindItem(getItem(position))
+        val currentItem = getItem(position)
+
+        if (currentItem != null){
+            holder.bindItem(getItem(position))
+        }
+
+        if(itemCount - position == USERS_PREFETCH_COUNT){
+            onPageEndReached.invoke()
+        }
     }
 
 
