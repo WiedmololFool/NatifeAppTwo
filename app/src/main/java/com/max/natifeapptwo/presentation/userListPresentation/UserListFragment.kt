@@ -27,7 +27,7 @@ class UserListFragment : Fragment() {
                 UserListRepository(
                     userListLocalDataSource = RoomUserListDataSource(
                         DatabaseSingleton.getInstance().apply {
-                            init(context = requireActivity().applicationContext)
+                            init { requireActivity().applicationContext }
                         }.database.userListDao()
                     ),
                     userListRemoteDataSource = RetrofitUserListDataSource(

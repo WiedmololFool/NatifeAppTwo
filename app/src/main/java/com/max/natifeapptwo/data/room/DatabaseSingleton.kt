@@ -5,18 +5,18 @@ import androidx.room.Room
 
 class DatabaseSingleton private constructor() {
 
-    private lateinit var applicationContext: Context
+    private lateinit var contextProvider: () -> Context
 
     val database: UserDatabase by lazy {
         Room.databaseBuilder(
-            applicationContext,
+            contextProvider.invoke(),
             UserDatabase::class.java,
             "databaseDb"
         ).build()
     }
 
-    fun init(context: Context) {
-        applicationContext = context
+    fun init(contextProvider: () -> Context) {
+        this.contextProvider = contextProvider
     }
 
     companion object{

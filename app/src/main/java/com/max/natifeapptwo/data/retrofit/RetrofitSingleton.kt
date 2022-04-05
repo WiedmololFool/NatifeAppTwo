@@ -5,16 +5,17 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
-class RetrofitSingleton private constructor(){
+class RetrofitSingleton private constructor() {
 
-    lateinit var userApi: UserApi
+    val userApi: UserApi
 
     init {
-        configureRetrofit()
+        userApi = configureRetrofit().create(UserApi::class.java)
     }
 
-    private fun configureRetrofit(){
+    private fun configureRetrofit(): Retrofit {
         val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
@@ -30,11 +31,11 @@ class RetrofitSingleton private constructor(){
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
 
-        userApi = retrofit.create(UserApi::class.java)
+        return retrofit
     }
 
 
-    companion object{
+    companion object {
 
         private const val BASE_URL = "https://randomuser.me"
 
