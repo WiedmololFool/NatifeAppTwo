@@ -27,9 +27,7 @@ class UserDetailsFragment : Fragment() {
                 arguments?.getString(Constants.UUID_KEY) ?: Constants.UUID_DEFAULT_VALUE,
                 UserListRepository(
                     userListLocalDataSource = RoomUserListDataSource(
-                        DatabaseSingleton.getInstance().apply {
-                            init { requireActivity().applicationContext }
-                        }.database.userListDao()
+                        DatabaseSingleton.getInstance().database.userListDao()
                     ),
                     userListRemoteDataSource = RetrofitUserListDataSource(
                         RetrofitSingleton.getInstance().userApi
