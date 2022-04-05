@@ -1,19 +1,16 @@
-package com.max.natifeapptwo
+package com.max.natifeapptwo.data.retrofit
 
-import android.app.Application
-import com.max.natifeapptwo.data.retrofit.UserApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-class UserApp: Application() {
+class RetrofitSingleton private constructor(){
 
     lateinit var userApi: UserApi
 
-    override fun onCreate() {
-        super.onCreate()
+    init {
         configureRetrofit()
     }
 
@@ -27,12 +24,32 @@ class UserApp: Application() {
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://randomuser.me")
+            .baseUrl(BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
 
         userApi = retrofit.create(UserApi::class.java)
+    }
+
+
+    companion object{
+
+        private const val BASE_URL = "https://randomuser.me"
+
+        @Volatile
+        private var INSTANCE: RetrofitSingleton? = null
+
+        fun getInstance(): RetrofitSingleton {
+            if (INSTANCE == null) {
+                synchronized(this) {
+                    if (INSTANCE == null) {
+                        INSTANCE = RetrofitSingleton()
+                    }
+                }
+            }
+            return INSTANCE!!
+        }
     }
 }

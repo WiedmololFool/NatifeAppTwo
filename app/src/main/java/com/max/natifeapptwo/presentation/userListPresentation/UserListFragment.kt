@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.max.natifeapptwo.R
-import com.max.natifeapptwo.UserApp
 import com.max.natifeapptwo.data.repository.UserListRepository
+import com.max.natifeapptwo.data.retrofit.RetrofitSingleton
 import com.max.natifeapptwo.data.retrofit.RetrofitUserListDataSource
-import com.max.natifeapptwo.data.room.DatabaseObject
+import com.max.natifeapptwo.data.room.DatabaseSingleton
 import com.max.natifeapptwo.data.room.RoomUserListDataSource
 import com.max.natifeapptwo.databinding.FragmentUserListBinding
 import com.max.natifeapptwo.presentation.userDetailsPresentation.UserDetailsFragment
@@ -26,12 +26,12 @@ class UserListFragment : Fragment() {
             UserListViewModelFactory(
                 UserListRepository(
                     userListLocalDataSource = RoomUserListDataSource(
-                        DatabaseObject.apply {
+                        DatabaseSingleton.getInstance().apply {
                             init(context = requireActivity().applicationContext)
                         }.database.userListDao()
                     ),
                     userListRemoteDataSource = RetrofitUserListDataSource(
-                        (activity?.application as UserApp).userApi
+                        RetrofitSingleton.getInstance().userApi
                     )
                 )
             )
