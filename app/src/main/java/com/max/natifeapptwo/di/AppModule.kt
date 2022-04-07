@@ -7,11 +7,11 @@ import org.koin.dsl.module
 
 val appModule = module {
 
-    viewModel<UserListViewModel> {
+    viewModel {
         UserListViewModel(userListRepository = get())
     }
 
-    viewModel<UserDetailsViewModel>{
-        (uuid: String) -> UserDetailsViewModel(uuid = uuid, get())
+    viewModel { (uuid: String) ->
+        UserDetailsViewModel(uuid = uuid, get())
     }
 }

@@ -16,7 +16,7 @@ import org.koin.core.parameter.parametersOf
 class UserDetailsFragment : Fragment() {
 
     private var binding: FragmentUserDetailsBinding? = null
-    private val viewModel by viewModel<UserDetailsViewModel>() {
+    private val viewModel by viewModel<UserDetailsViewModel> {
         parametersOf(
             arguments?.getString(Constants.UUID_KEY) ?: Constants.UUID_DEFAULT_VALUE
         )

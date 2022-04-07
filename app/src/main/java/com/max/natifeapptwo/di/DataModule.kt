@@ -1,5 +1,6 @@
 package com.max.natifeapptwo.di
 
+import android.content.Context
 import androidx.room.Room
 import com.max.natifeapptwo.Constants
 import com.max.natifeapptwo.data.repository.UserListLocalDataSource
@@ -19,34 +20,20 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val dataModule = module {
 
-    single<UserApi> {
-        val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .build()
-
-        retrofit.create(UserApi::class.java)
+    single {
+        provideRetrofit()
     }
 
-    single<UserListDao>{
-        val database: UserDatabase by lazy {
-            Room.databaseBuilder(
-                get(),
-                UserDatabase::class.java,
-                "databaseDb"
-            ).build()
-        }
-        database.userListDao()
+    single {
+        provideUserApi(get())
+    }
+
+    single {
+        provideDatabase(get())
+    }
+
+    single {
+        provideUserListDao(get())
     }
 
     single<UserListRemoteDataSource> {
@@ -57,10 +44,48 @@ val dataModule = module {
         RoomUserListDataSource(userListDao = get())
     }
 
-    single<UserListRepository> {
+    single {
         UserListRepository(
             userListRemoteDataSource = get(),
             userListLocalDataSource = get()
         )
     }
+}
+
+fun provideRetrofit(): Retrofit {
+    val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(httpLoggingInterceptor)
+        .build()
+
+    val retrofit = Retrofit.Builder()
+        .baseUrl(Constants.BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .build()
+
+    return retrofit
+}
+
+fun provideUserApi(retrofit: Retrofit): UserApi {
+    return retrofit.create(UserApi::class.java)
+}
+
+fun provideDatabase(context: Context): UserDatabase {
+    val database: UserDatabase by lazy {
+        Room.databaseBuilder(
+            context,
+            UserDatabase::class.java,
+            "databaseDb"
+        ).build()
+    }
+    return database
+}
+
+fun provideUserListDao(database: UserDatabase): UserListDao {
+    return database.userListDao()
 }
