@@ -1,5 +1,6 @@
 package com.max.natifeapptwo.presentation.userListPresentation
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,36 +9,21 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.max.natifeapptwo.R
-import com.max.natifeapptwo.data.repository.UserListRepository
-import com.max.natifeapptwo.data.retrofit.RetrofitSingleton
-import com.max.natifeapptwo.data.retrofit.RetrofitUserListDataSource
-import com.max.natifeapptwo.data.room.DatabaseSingleton
-import com.max.natifeapptwo.data.room.RoomUserListDataSource
+import com.max.natifeapptwo.app.appComponent
 import com.max.natifeapptwo.databinding.FragmentUserListBinding
 import com.max.natifeapptwo.presentation.userDetailsPresentation.UserDetailsFragment
+import javax.inject.Inject
 
 
 class UserListFragment : Fragment() {
 
     private var binding: FragmentUserListBinding? = null
-    private val viewModel by lazy {
-        ViewModelProvider(
-            this,
-            UserListViewModelFactory(
-                UserListRepository(
-                    userListLocalDataSource = RoomUserListDataSource(
-                        DatabaseSingleton.getInstance().apply {
-                            init { requireActivity().applicationContext }
-                        }.database.userListDao()
-                    ),
-                    userListRemoteDataSource = RetrofitUserListDataSource(
-                        RetrofitSingleton.getInstance().userApi
-                    )
-                )
-            )
-        )
-            .get(UserListViewModel::class.java)
-    }
+
+    private lateinit var viewModel: UserListViewModel
+
+    @Inject
+    lateinit var viewModelFactory: UserListViewModelFactory
+
     private val adapter by lazy {
         UserListAdapter(onItemClickListener = { user ->
             val userDetailsFragment = UserDetailsFragment.newInstance(user.uuid)
@@ -45,10 +31,18 @@ class UserListFragment : Fragment() {
                 .replace(R.id.fragmentContainer, userDetailsFragment)
                 .addToBackStack(null)
                 .commit()
-        },  onPageEndReached = {
+        }, onPageEndReached = {
             viewModel.fetchUserList()
         })
     }
+
+    override fun onAttach(context: Context) {
+        requireContext().appComponent.inject(this)
+        viewModel = ViewModelProvider(this, viewModelFactory)
+            .get(UserListViewModel::class.java)
+        super.onAttach(context)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

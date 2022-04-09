@@ -3,8 +3,9 @@ package com.max.natifeapptwo.presentation.userListPresentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.max.natifeapptwo.data.repository.UserListRepository
+import javax.inject.Inject
 
-class UserListViewModelFactory(
+class UserListViewModelFactory @Inject constructor(
     private val userListRepository: UserListRepository
 ): ViewModelProvider.Factory {
 
