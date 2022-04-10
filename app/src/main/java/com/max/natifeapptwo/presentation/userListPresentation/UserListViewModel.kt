@@ -7,10 +7,13 @@ import com.max.natifeapptwo.Constants
 import com.max.natifeapptwo.data.repository.UserListRepository
 import com.max.natifeapptwo.data.room.entities.UserEntity
 import com.max.natifeapptwo.presentation.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class UserListViewModel(
+@HiltViewModel
+class UserListViewModel @Inject constructor(
     private val userListRepository: UserListRepository
 ) : BaseViewModel() {
 

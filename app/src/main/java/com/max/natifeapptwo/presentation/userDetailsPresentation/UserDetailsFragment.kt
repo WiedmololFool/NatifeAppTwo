@@ -5,36 +5,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.max.natifeapptwo.Constants
 import com.max.natifeapptwo.R
-import com.max.natifeapptwo.data.repository.UserListRepository
-import com.max.natifeapptwo.data.retrofit.RetrofitSingleton
-import com.max.natifeapptwo.data.retrofit.RetrofitUserListDataSource
-import com.max.natifeapptwo.data.room.DatabaseSingleton
-import com.max.natifeapptwo.data.room.RoomUserListDataSource
 import com.max.natifeapptwo.data.room.entities.UserEntity
 import com.max.natifeapptwo.databinding.FragmentUserDetailsBinding
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class UserDetailsFragment : Fragment() {
 
     private var binding: FragmentUserDetailsBinding? = null
-    private val viewModel by lazy {
-        ViewModelProvider(
-            viewModelStore,
-            UserDetailsViewModelFactory(
-                arguments?.getString(Constants.UUID_KEY) ?: Constants.UUID_DEFAULT_VALUE,
-                UserListRepository(
-                    userListLocalDataSource = RoomUserListDataSource(
-                        DatabaseSingleton.getInstance().database.userListDao()
-                    ),
-                    userListRemoteDataSource = RetrofitUserListDataSource(
-                        RetrofitSingleton.getInstance().userApi
-                    )
-                )
-            )
-        ).get(UserDetailsViewModel::class.java)
+
+    @Inject
+    lateinit var viewModelFactory: UserDetailsViewModelFactory.Factory
+    private val viewModel: UserDetailsViewModel by viewModels {
+        viewModelFactory.create(
+            arguments?.getString(Constants.UUID_KEY) ?: Constants.UUID_DEFAULT_VALUE
+        )
     }
 
     override fun onCreateView(

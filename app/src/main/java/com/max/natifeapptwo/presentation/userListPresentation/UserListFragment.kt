@@ -5,39 +5,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.max.natifeapptwo.R
-import com.max.natifeapptwo.data.repository.UserListRepository
-import com.max.natifeapptwo.data.retrofit.RetrofitSingleton
-import com.max.natifeapptwo.data.retrofit.RetrofitUserListDataSource
-import com.max.natifeapptwo.data.room.DatabaseSingleton
-import com.max.natifeapptwo.data.room.RoomUserListDataSource
+import androidx.fragment.app.viewModels
 import com.max.natifeapptwo.databinding.FragmentUserListBinding
 import com.max.natifeapptwo.presentation.userDetailsPresentation.UserDetailsFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class UserListFragment : Fragment() {
 
     private var binding: FragmentUserListBinding? = null
-    private val viewModel by lazy {
-        ViewModelProvider(
-            this,
-            UserListViewModelFactory(
-                UserListRepository(
-                    userListLocalDataSource = RoomUserListDataSource(
-                        DatabaseSingleton.getInstance().apply {
-                            init { requireActivity().applicationContext }
-                        }.database.userListDao()
-                    ),
-                    userListRemoteDataSource = RetrofitUserListDataSource(
-                        RetrofitSingleton.getInstance().userApi
-                    )
-                )
-            )
-        )
-            .get(UserListViewModel::class.java)
-    }
+    private val viewModel: UserListViewModel by viewModels()
+
     private val adapter by lazy {
         UserListAdapter(onItemClickListener = { user ->
             val userDetailsFragment = UserDetailsFragment.newInstance(user.uuid)

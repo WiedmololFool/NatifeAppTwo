@@ -3,9 +3,10 @@ package com.max.natifeapptwo.data.repository
 import com.max.natifeapptwo.data.room.entities.UserEntity
 import io.reactivex.Observable
 import io.reactivex.Single
+import javax.inject.Inject
 
 
-class UserListRepository(
+class UserListRepository @Inject constructor(
     private val userListLocalDataSource: UserListLocalDataSource,
     private val userListRemoteDataSource: UserListRemoteDataSource,
 ) {

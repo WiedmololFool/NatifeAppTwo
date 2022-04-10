@@ -3,7 +3,9 @@ package com.max.natifeapptwo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.max.natifeapptwo.presentation.userListPresentation.UserListFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

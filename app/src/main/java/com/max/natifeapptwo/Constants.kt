@@ -7,5 +7,5 @@ object Constants {
     const val TAG = "TAG"
     const val USERS_RESPONSE_NUMBER = "20"
     const val USERS_RESPONSE_NATIONALITY = "au,br,ch,de,dk,es,fi,fr,ie,no,nl,nz,tr,us"
-
+    const val BASE_URL = "https://randomuser.me"
 }
