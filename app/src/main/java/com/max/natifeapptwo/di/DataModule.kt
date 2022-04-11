@@ -27,14 +27,12 @@ val dataModule = module {
             .addInterceptor(httpLoggingInterceptor)
             .build()
 
-        val retrofit = Retrofit.Builder()
+        Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
-
-        retrofit
     }
 
     factory {
@@ -46,7 +44,7 @@ val dataModule = module {
             Room.databaseBuilder(
                 get(),
                 UserDatabase::class.java,
-                "databaseDb"
+                Constants.DATABASE_NAME
             ).build()
         }
         database
