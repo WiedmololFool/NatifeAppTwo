@@ -17,13 +17,11 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 @Module
 class DataModule {
 
     @Provides
-    @Singleton
     fun provideRetrofit(): Retrofit {
         val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
@@ -49,7 +47,6 @@ class DataModule {
     }
 
     @Provides
-    @Singleton
     fun provideDatabase(context: Context): UserDatabase {
         val database: UserDatabase by lazy {
             Room.databaseBuilder(
@@ -67,13 +64,11 @@ class DataModule {
     }
 
     @Provides
-    @Singleton
     fun provideUserListLocalDataSource(userListDao: UserListDao): UserListLocalDataSource {
         return RoomUserListDataSource(userListDao = userListDao)
     }
 
     @Provides
-    @Singleton
     fun provideUserListRemoteDataSource(userApi: UserApi): UserListRemoteDataSource {
         return RetrofitUserListDataSource(userApi = userApi)
     }
