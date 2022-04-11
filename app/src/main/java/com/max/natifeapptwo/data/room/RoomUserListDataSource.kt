@@ -4,8 +4,9 @@ import com.max.natifeapptwo.data.room.entities.UserEntity
 import com.max.natifeapptwo.data.repository.UserListLocalDataSource
 import io.reactivex.Completable
 import io.reactivex.Single
+import javax.inject.Inject
 
-class RoomUserListDataSource(
+class RoomUserListDataSource @Inject constructor(
     private val userListDao: UserListDao
 ) : UserListLocalDataSource {
 

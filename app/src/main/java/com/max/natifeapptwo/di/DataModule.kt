@@ -3,11 +3,7 @@ package com.max.natifeapptwo.di
 import android.content.Context
 import androidx.room.Room
 import com.max.natifeapptwo.Constants
-import com.max.natifeapptwo.data.repository.UserListLocalDataSource
-import com.max.natifeapptwo.data.repository.UserListRemoteDataSource
-import com.max.natifeapptwo.data.retrofit.RetrofitUserListDataSource
 import com.max.natifeapptwo.data.retrofit.UserApi
-import com.max.natifeapptwo.data.room.RoomUserListDataSource
 import com.max.natifeapptwo.data.room.UserDatabase
 import com.max.natifeapptwo.data.room.UserListDao
 import dagger.Module
@@ -65,15 +61,5 @@ class DataModule {
     @Provides
     fun provideUserListDao(database: UserDatabase): UserListDao {
         return database.userListDao()
-    }
-
-    @Provides
-    fun provideUserListLocalDataSource(userListDao: UserListDao): UserListLocalDataSource {
-        return RoomUserListDataSource(userListDao = userListDao)
-    }
-
-    @Provides
-    fun provideUserListRemoteDataSource(userApi: UserApi): UserListRemoteDataSource {
-        return RetrofitUserListDataSource(userApi = userApi)
     }
 }
