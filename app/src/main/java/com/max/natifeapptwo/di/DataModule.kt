@@ -20,27 +20,27 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val dataModule = module {
 
-    single {
+    factory {
         provideRetrofit()
     }
 
-    single {
+    factory {
         provideUserApi(get())
     }
 
-    single {
+    factory {
         provideDatabase(get())
     }
 
-    single {
+    factory {
         provideUserListDao(get())
     }
 
-    single<UserListRemoteDataSource> {
+    factory<UserListRemoteDataSource> {
         RetrofitUserListDataSource(userApi = get())
     }
 
-    single<UserListLocalDataSource> {
+    factory<UserListLocalDataSource> {
         RoomUserListDataSource(userListDao = get())
     }
 
